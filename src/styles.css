@@ -96,6 +96,10 @@ main {
   border-bottom: 2px solid #cb6442;
 }
 
+.nav-link.active {
+  color: #00ff11;
+}
+
 /* Metrics */
 .metrics-div {
   display: flex;
@@ -286,7 +290,7 @@ main {
   border: 0.7px solid #021e07;
   box-shadow: 2px 1px rgba(2, 255, 23, 0.616);
   border-radius: 10px;
-  width: 100px;
+  width: auto;
   height: 35px;
   font-family: "Bebas Neue", sans-serif;
   font-size: 20px;
@@ -434,8 +438,16 @@ main {
 
   }
 
+  .button-ranking {
+    gap: 10px;
+  } 
+  
   .button-ranking button{
     width: auto;
+    height: auto;
+    font-size: 15px;
+    padding: 2px;
+
   }
 
   /* Carousel */
@@ -456,6 +468,7 @@ main {
 
 .button-new-player {
   margin-left: 35%;
+  width: auto;
 }
 
 .download {

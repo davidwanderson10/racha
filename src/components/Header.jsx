@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 import "../../src/styles.css";
 import logo from "../assets/logo.png";
 
-
 const Header = () => {
   return (
     <header className="header">
@@ -11,9 +10,24 @@ const Header = () => {
         <img src={logo} alt="Logo" />
       </div>
       <nav className="nav">
-        <NavLink to="/" className="nav-link" activeclassname="active-link" >Home</NavLink>
-        <NavLink to="/rodadas" className="nav-link" activeclassname="active-link">Rodadas</NavLink>
-        <NavLink to="/ranking" className="nav-link" activeclassname="active-link">Ranking</NavLink>
+        <NavLink
+          to="/"
+          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+        >
+          Home
+        </NavLink>
+        <NavLink
+          to="/rodadas"
+          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+        >
+          Rodadas
+        </NavLink>
+        <NavLink
+          to="/ranking"
+          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+        >
+          Ranking
+        </NavLink>
       </nav>
     </header>
   );

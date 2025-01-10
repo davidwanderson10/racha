@@ -6,10 +6,10 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="social-icons">
-        <a href="https://www.youtube.com/@rachaverde">
-          <FaInstagram size={30} href="https://www.youtube.com/@rachaverde"/>
-        </a>
         <a href="https://www.instagram.com/rachaverde">
+          <FaInstagram size={30} />
+        </a>
+        <a href="https://www.youtube.com/@rachaverde">
           <FaYoutube size={30} />
         </a>
       </div>
