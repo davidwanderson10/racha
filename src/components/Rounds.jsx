@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 const url = import.meta.env.VITE_API_URL || ''
 import amarelo from "../assets/amarelo.png";
 import vermelho from "../assets/verm.png";
+import * as XLSX from 'xlsx';
+
 
 // import vermelho from "../assets/vermelho.png";
 
@@ -68,8 +70,6 @@ const Tables = () => {
     melhorGoleiro: {nomes: "", gols: 0},
     classificacao: []
   }
-
-  console.log(roundData)
   
   // Função para buscar os dados da API
   useEffect(() => {
@@ -310,7 +310,6 @@ const Tables = () => {
       const resultRound = await fetchCreateRound()
 
       if (resultRound === 1) {
-        console.log('atualizar jogadores')
         const fetchPlayerUpdate = async () => {
           try {
             const time1 = roundData.times[0].jogadores
@@ -773,7 +772,7 @@ const Tables = () => {
               <th>Rodada</th>
               <th>Data</th>
               <th><span>&#9917;</span></th>
-              <th><span style={{backgroundColor: 'red', borderRadius: '3px'}}>‎ A ‎ </span></th>
+              <th><span style={{backgroundColor: 'red', borderRadius: '3px'}}>A</span></th>
               <th> 
                   <img
                   src={amarelo}
