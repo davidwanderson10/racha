@@ -1,0 +1,465 @@
+/* Importando fontes */
+@import "@fontsource/bebas-neue";
+@import "@fontsource/poppins";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+
+/* Reset */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+  background: #e2e1e1;
+  background-image: url('../src/assets/palmeiras.png');
+  height: 100%;
+}
+
+/* Layout base */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.app {
+  display: "flex";
+  flex-direction: "column";
+  min-height: "100vh";
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #004d00; 
+  padding: 0 20px;
+  height: 60px !important;
+  min-height: 60px !important;
+  position: relative;
+  z-index: 1;
+}
+
+.logo img {
+  position: absolute;
+  height: 120px; /* altura maior que o header */
+  top: 5px; /* ajusta a parte superior da logo */
+  left: 20px; /* mantém a logo alinhada à esquerda */
+  z-index: 2; 
+}
+
+.nav-link:before{
+  content: ' ';
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 0px;
+  height: 2px;
+  background-color: #00ff11;
+  transition: all 1s ease;
+  color: #00ff11;
+}
+
+.nav-link:hover:before{
+  width: 100%;
+  background-color: #fff700;
+  color: #00ff11;
+}
+
+.nav {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-link {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 32px;
+  text-decoration: none;
+  color: #fff;
+  transition: 2ms ease-in;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #00ff11;
+}
+
+.active-link {
+  border-bottom: 2px solid #cb6442;
+}
+
+/* Metrics */
+.metrics-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.metrics {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  gap: 50px;
+  flex-wrap: wrap;
+  background: #0000009b;
+  width: 100%;
+  height: 220px;
+}
+
+.metric-card {
+  text-align: center;
+  background: #004d00;
+  border-radius: 20px;
+  width: 170px;
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 3px 3px rgba(2, 255, 23, 0.493);
+}
+
+.metric-card:hover {
+  width: 180px;
+  height: 180px;
+  background: #003e00;
+}
+
+.metric-value {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 60px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.metric-label {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Carousel */
+.div-carousel{
+  margin: 60px 350px 60px 350px;
+}
+
+.div-carousel p{
+  text-align: center;
+  background-color: #c2c2c22b;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+}
+
+.carousel-img{
+  padding: 10px;
+  text-align: center;
+  margin-top: 0;
+}
+
+.carousel-img img{
+  width: 90%;
+  height: auto;
+  
+}
+
+.carousel-img img:hover {
+  box-shadow: 3px 4px rgba(255, 255, 255, 0.786);
+}
+
+/* Ranking */
+
+.div-table {
+  margin-top: 10px;
+}
+
+.button-ranking {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 70px 20px 0px 20px;
+  gap: 15px;
+}
+
+.button-ranking button{
+  color: #004d00;
+  background-color: #ffffff;
+  cursor: pointer;
+  border: 0.7px solid #021e07;
+  box-shadow: 2px 1px rgba(2, 255, 23, 0.616);
+  border-radius: 10px;
+  width: 100px;
+  height: 35px;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 20px;
+}
+
+.button-new-player {
+  margin-left: 90%;
+  margin-top: 20px;
+  color: #fff;
+  background-color: #004d00;
+  cursor: pointer;
+  border: 0.7px solid #021e07;
+  box-shadow: 2px 1px rgba(2, 255, 23, 0.616);
+  border-radius: 10px;
+  width: 120px;
+  height: 35px;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 22px;
+}
+
+.download {
+  margin-left: 45%;
+  margin-bottom: 20px;
+  color: #fff;
+  background-color: #004d00;
+  cursor: pointer;
+  border: 0.7px solid #021e07;
+  box-shadow: 2px 1px rgba(2, 255, 23, 0.616);
+  border-radius: 10px;
+  width: 150px;
+  height: 35px;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 22px;
+}
+
+.div-table {
+  overflow-y: auto; /* Adiciona rolagem vertical */
+  max-height: 400px;
+  margin: 20px 80px 50px 20px;
+  background-color: #00000074;
+}
+
+.ranking-table {
+  width: 80%;
+  border-collapse: collapse;
+  background: #00000000;
+  padding: 150px;
+  margin: 0 auto;
+}
+
+.ranking-table th, .ranking-table td {
+  border: 1px solid #021e07;
+  padding: 3px;
+  text-align: center;
+  background-color: #004d00b1;
+}
+
+.ranking-table th {
+  background-color: #021e07;
+  font-weight: bold;
+  position: sticky;
+  top: 0; 
+  z-index: 1;
+}
+
+/* Round */
+
+.div-round {
+  margin-top: 10px;
+}
+
+
+.round-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 20px 0px 20px;
+  gap: 15px;
+}
+
+.round-button button{
+  color: #004d00;
+  background-color: #ffffff;
+  cursor: pointer;
+  border: 0.7px solid #021e07;
+  box-shadow: 2px 1px rgba(2, 255, 23, 0.616);
+  border-radius: 10px;
+  width: 100px;
+  height: 35px;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 20px;
+}
+
+.div-round-table {
+  overflow-y: auto; /* Adiciona rolagem vertical */
+  max-height: 400px;
+  margin: 20px 20px 100px 20px;
+  background-color: #00000074;
+}
+
+.round-table {
+  width: 80%;
+  border-collapse: collapse;
+  background: #00000000;
+  padding: 150px;
+  margin: 0 auto;
+}
+
+.round-table th, .round-table td {
+  border: 1px solid #021e07;
+  padding: 3px;
+  text-align: center;
+  background-color: #004d00b1;
+}
+
+.round-table th {
+  background-color: #021e07;
+  font-weight: bold;
+  position: sticky;
+  top: 0; 
+  z-index: 1;
+}
+
+/* Confrontos */
+
+.confrontos input, .confrontos select, .confrontos option {
+  border-radius: 6px;
+}
+
+
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 10px;
+  background: #004d00;
+  margin-top: auto; /* Garante que o footer fique no rodapé */
+  margin: 0;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.social-icons a{
+  color: #ffffff;
+}
+
+.footer-text {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+
+  .metrics {
+    flex-direction: column;
+    gap: 30px;
+    flex-wrap: nowrap;
+    background: #00000050;
+    width: 100%;
+    height: 220px;
+    margin-top: 250px;
+    margin-bottom: 0px;
+  }
+
+  .metric-card {
+    width: 100px;
+    height: 100px;
+    padding: 20px;
+    box-shadow: 3px 3px rgba(2, 255, 23, 0.493);
+  }
+
+  .metric-value {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 45px;
+    color: #ffffff;
+    margin: 0;
+  }
+  
+  .metric-label {
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #004d00; 
+    padding: 0 20px;
+    height: 60px !important;
+    min-height: 60px !important;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .logo img {
+    height: 100px;
+  }
+
+  .nav {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .nav-link {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.8rem;
+    text-decoration: none;
+    color: #ffffff;
+    transition: color 0.3s;
+  }
+
+  .footer-text {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .ranking-table th, .ranking-table td {
+    padding: 7px;
+  }
+
+  .div-table {
+    overflow-y: auto; /* Adiciona rolagem vertical */
+    max-height: 500px;
+
+  }
+
+  .button-ranking button{
+    width: auto;
+  }
+
+  /* Carousel */
+.div-carousel{
+  margin: 250px 50px 60px 50px;
+}
+
+.carousel-img{
+  padding: 10px;
+  text-align: center;
+}
+
+.carousel-img img{
+  width: 90%;
+  height: auto;
+  max-height: 120px;
+}
+
+.button-new-player {
+  margin-left: 35%;
+}
+
+.download {
+  margin-left: 30%;
+}
+
+}

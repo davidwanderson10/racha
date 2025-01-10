@@ -1,2 +1,3 @@
-# racha
-Racha verde!
+# React + Vite
+
+Projeto front - Racha verde
