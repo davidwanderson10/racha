@@ -155,7 +155,7 @@ const Tables = () => {
               "Content-Type": "application/json",
               "key": codigo
             },
-            body: JSON.stringify({nome: nome})
+            body: JSON.stringify({nome: nome.toUpperCase()})
           })
 
           var data = await response.json()
