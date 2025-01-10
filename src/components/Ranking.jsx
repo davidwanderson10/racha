@@ -147,6 +147,7 @@ const Tables = () => {
   const newPlayer = () => {
     const nome = prompt('Digite o nome do Jodagor: ')
     const codigo = prompt('Digite o código verde: ')
+    if (nome && codigo) {
       const fetchCreatePlayer = async () => {
         try {
           const response = await fetch(url + 'player', {
@@ -155,7 +156,7 @@ const Tables = () => {
               "Content-Type": "application/json",
               "key": codigo
             },
-            body: JSON.stringify({nome: nome.toUpperCase()})
+            body: JSON.stringify({nome: nome ? nome.toUpperCase() : ''})
           })
 
           var data = await response.json()
@@ -165,7 +166,8 @@ const Tables = () => {
         } catch (err) {
           setError(err.message);
         }
-      };
+      }
+    }
       fetchCreatePlayer()
   }
 
