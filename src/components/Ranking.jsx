@@ -278,7 +278,7 @@ const Tables = () => {
                 {visibleColumns.includes("amarelo") && <td>{row.amarelo}</td>}
                 {visibleColumns.includes("vermelho") && <td>{row.vermelho}</td>}
                 {visibleColumns.includes("gols") && <td>{row.gols}</td>}
-                {visibleColumns.includes("mediaG") && <td>{(row.saldo).toFixed(2)}</td>}
+                {visibleColumns.includes("mediaG") && <td>{(row.gols / row.cotas).toFixed(2)}</td>}
                 {visibleColumns.includes("ass") && <td>{row.ass}</td>}
                 {visibleColumns.includes("mediaA") && <td>{(row.ass / row.cotas).toFixed(2)}</td>}
               </tr>
