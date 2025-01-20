@@ -158,10 +158,10 @@ const Tables = () => {
   // Inicializar estatísticas para cada time
   confrontos.forEach(({ timeA, timeB }) => {
     if (!estatisticas[timeA]) {
-      estatisticas[timeA] = { v: 0, e: 0, d: 0, gp: 0 };
+      estatisticas[timeA] = { v: 0, e: 0, d: 0, gp: 0, gc: 0 };
     }
     if (!estatisticas[timeB]) {
-      estatisticas[timeB] = { v: 0, e: 0, d: 0, gp: 0 };
+      estatisticas[timeB] = { v: 0, e: 0, d: 0, gp: 0, gc: 0 };
     }
   });
 
@@ -170,6 +170,10 @@ const Tables = () => {
     // Atualizar gols pró
     estatisticas[timeA].gp += golsA;
     estatisticas[timeB].gp += golsB;
+    
+    // Atualizar gols contra
+    estatisticas[timeA].gc += golsB;
+    estatisticas[timeB].gc += golsA;
 
     if (golsA > golsB) {
       // Time A venceu
@@ -190,7 +194,7 @@ const Tables = () => {
   setRoundData((prevData) => {
     // Atualizar times sem mudar a ordem
     const updatedTimes = prevData.times.map((time) => {
-      const timeStats = estatisticas[time.nome] || { v: 0, e: 0, d: 0, gp: 0 };
+      const timeStats = estatisticas[time.nome] || { v: 0, e: 0, d: 0, gp: 0, gc: 0 };
 
       // Determinar os valores de p, s, t, q com base na classificação do time
       let p = 0,
@@ -215,6 +219,7 @@ const Tables = () => {
         e: timeStats.e,
         d: timeStats.d,
         gp: timeStats.gp,
+        gc: timeStats.gc,
         p,
         s,
         t,
@@ -263,8 +268,8 @@ const Tables = () => {
     };
   });
 
-    if (!roundData.rodada || !roundData.data || !roundData.totalGols || 
-      !roundData.artilheiros.nomes || !roundData.artilheiros.gols ||
+    if (!roundData.rodada || !roundData.data || !roundData.totalGols || !roundData.totalAssistencias || 
+      !roundData.totalAmarelos || !roundData.totalVermelhos || !roundData.artilheiros.nomes || !roundData.artilheiros.gols ||
       !roundData.assistentes.nomes || !roundData.assistentes.assistencias || !roundData.classificacao[0] || !roundData.classificacao[1] ||
       !roundData.classificacao[2] || !roundData.classificacao[3]) {
       alert('Preencha todos os campos antes de salvar')
