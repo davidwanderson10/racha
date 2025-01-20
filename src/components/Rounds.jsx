@@ -268,9 +268,9 @@ const Tables = () => {
     };
   });
 
-    if (!roundData.rodada || !roundData.data || !roundData.totalGols || !roundData.totalAssistencias || 
-      !roundData.totalAmarelos || !roundData.totalVermelhos || !roundData.artilheiros.nomes || !roundData.artilheiros.gols ||
-      !roundData.assistentes.nomes || !roundData.assistentes.assistencias || !roundData.classificacao[0] || !roundData.classificacao[1] ||
+    if (!roundData.rodada || !roundData.data || !roundData.totalGols || !roundData.artilheiros.nomes || 
+        !roundData.artilheiros.gols || !roundData.assistentes.nomes || !roundData.assistentes.assistencias || 
+        !roundData.classificacao[0] || !roundData.classificacao[1] ||
       !roundData.classificacao[2] || !roundData.classificacao[3]) {
       alert('Preencha todos os campos antes de salvar')
       
