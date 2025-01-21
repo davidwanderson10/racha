@@ -167,8 +167,8 @@ const Tables = () => {
           setError(err.message);
         }
       }
-    }
       fetchCreatePlayer()
+    }
   }
 
   const downloadExcel = () => {
