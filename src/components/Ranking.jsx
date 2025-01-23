@@ -10,8 +10,8 @@ const Tables = () => {
   const [dataGol, setDataGol] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log(data, 'data')
-  console.log(dataGol, 'dataGol')
+  // console.log(data, 'data')
+  // console.log(dataGol, 'dataGol')
 
   // Estado para a coluna e direção de classificação
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "desc" });
@@ -131,7 +131,27 @@ const Tables = () => {
         setVisibleColumns(["pos", "jogador", "pontos", "cotas", "jogos", "vitorias", "empates", "derrotas", 
           'gols_pro', 'gols_contra', 'saldo_gols', 'primeiro', 'segundo', 'terceiro', 'quarto', 'amarelo', 'vermelho'
         ]);
-    } else {
+    } else if (key === "campeao_gol") {
+      // Ordena por pontos (descendente), depois por cotas (ascendente)
+      sortedDatagol = [...dataGol].sort((a, b) => {
+        if (b.primeiro !== a.primeiro) {
+          return b.primeiro - a.primeiro; // Maior número de títulos
+        }
+        return a.cotas - b.cotas; // Menor número de cotas primeiro
+      });
+  
+      setVisibleColumns(["pos", "jogador", "primeiro"]);
+  } else if (key === "campeao_jog") {
+    // Ordena por pontos (descendente), depois por cotas (ascendente)
+    sortedDataJog = [...dataJog].sort((a, b) => {
+      if (b.primeiro !== a.primeiro) {
+        return b.primeiro - a.primeiro; // Maior número de títulos
+      }
+      return a.cotas - b.cotas; // Menor número de cotas primeiro
+    });
+
+    setVisibleColumns(["pos", "jogador", "primeiro"]);
+  } else {
       // Ordenação genérica para outras colunas
       sortedDataJog = [...data].sort((a, b) => {
         if (b[key] < a[key]) return -1;
@@ -140,7 +160,7 @@ const Tables = () => {
       });
     }
   
-    setData(key === "goleiros" ? sortedDatagol : sortedDataJog);
+    setData(key === "goleiros" || key === "campeao_gol" ? sortedDatagol : sortedDataJog);
     setSortConfig({ key, direction: "desc" }); // Mantém sempre descendente
   };
 
@@ -193,10 +213,12 @@ const Tables = () => {
     <div className="div-ranking">
         <button className="button-new-player" onClick={() => newPlayer()}>Novo jogador</button>
       <div className="button-ranking">
-        <button onClick={() => handleColumnChange("ranking")}>Ranking</button>
-        <button onClick={() => handleColumnChange("gols")}>Gols</button>
+        <button onClick={() => handleColumnChange("ranking")}>RKG JOG.</button>
+        <button onClick={() => handleColumnChange("goleiros")}>RKG GOL.</button>
+        <button onClick={() => handleColumnChange("campeao_jog")}>&#127942; JOG.</button>
+        <button onClick={() => handleColumnChange("campeao_gol")}>&#127942; GOL.</button>
+        <button onClick={() => handleColumnChange("gols")}>Artilharia</button>
         <button onClick={() => handleColumnChange("ass")}>Assistências</button>
-        <button onClick={() => handleColumnChange("goleiros")}>Goleiros</button>
       </div>
       <div className="div-table">
         <table className="ranking-table">
@@ -213,7 +235,7 @@ const Tables = () => {
               {visibleColumns.includes("gols_pro") && <th>GP</th>}
               {visibleColumns.includes("gols_contra") && <th>GC</th>}
               {visibleColumns.includes("saldo_gols") && <th>SG</th>}
-              {visibleColumns.includes("primeiro") && <th>1º</th>}
+              {visibleColumns.includes("primeiro") && <th>&#127942;</th>}
               {visibleColumns.includes("segundo") && <th>2º</th>}
               {visibleColumns.includes("terceiro") && <th>3º</th>}
               {visibleColumns.includes("quarto") && <th>4º</th>}
