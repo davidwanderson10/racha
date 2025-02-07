@@ -36,9 +36,10 @@ const Tables = () => {
     "amarelo",
     "vermelho",
     "gols",
-    "mediaG",
     "ass",
-    "mediaA"
+    "cotas2",
+    "mediaG",
+    "mediaA",
   ]);
 
   // Função para buscar os dados da API
@@ -101,24 +102,26 @@ const Tables = () => {
       ]);
     } else if (key === "gols") {
       // Ordena por gols (descendente), depois por cotas (ascendente)
-      sortedDataJog = [...dataJog].sort((a, b) => {
+      const sortedDataTotal = dataJog.concat(dataGol)
+      sortedDataJog = [...sortedDataTotal].sort((a, b) => {
         if (b.gols !== a.gols) {
           return b.gols - a.gols; // Maior número de gols primeiro
         }
         return a.cotas - b.cotas; // Menor número de cotas primeiro
       });
   
-      setVisibleColumns(["pos", "jogador", "gols", "cotas", 'mediaG']);
+      setVisibleColumns(["pos", "jogador", "gols", "cotas2", 'mediaG']);
     } else if (key === "ass") {
       // Ordena por assistências (descendente), depois por cotas (ascendente)
-      sortedDataJog = [...dataJog].sort((a, b) => {
+      const sortedDataTotal = dataJog.concat(dataGol)
+      sortedDataJog = [...sortedDataTotal].sort((a, b) => {
         if (b.ass !== a.ass) {
           return b.ass - a.ass; // Maior número de gols primeiro
         }
         return a.cotas - b.cotas; // Menor número de cotas primeiro
       });
   
-      setVisibleColumns(["pos", "jogador", "ass", "cotas", 'mediaA']);
+      setVisibleColumns(["pos", "jogador", "ass", "cotas2", 'mediaA']);
     } else if (key === "goleiros") {
         // Ordena por pontos (descendente), depois por cotas (ascendente)
         sortedDatagol = [...dataGol].sort((a, b) => {
@@ -258,8 +261,9 @@ const Tables = () => {
                 </th>
               )}
               {visibleColumns.includes("gols") && <th>Gols</th>}
-              {visibleColumns.includes("mediaG") && <th>Média</th>}
               {visibleColumns.includes("ass") && <th>Assistências</th>}
+              {visibleColumns.includes("cotas2") && <th>Cotas</th>}
+              {visibleColumns.includes("mediaG") && <th>Média</th>}
               {visibleColumns.includes("mediaA") && <th>Média</th>}
             </tr>
           </thead>
@@ -300,8 +304,9 @@ const Tables = () => {
                 {visibleColumns.includes("amarelo") && <td>{row.amarelo}</td>}
                 {visibleColumns.includes("vermelho") && <td>{row.vermelho}</td>}
                 {visibleColumns.includes("gols") && <td>{row.gols}</td>}
-                {visibleColumns.includes("mediaG") && <td>{(row.gols / row.cotas).toFixed(2)}</td>}
                 {visibleColumns.includes("ass") && <td>{row.ass}</td>}
+                {visibleColumns.includes("cotas2") && <td>{row.cotas}</td>}
+                {visibleColumns.includes("mediaG") && <td>{(row.gols / row.cotas).toFixed(2)}</td>}
                 {visibleColumns.includes("mediaA") && <td>{(row.ass / row.cotas).toFixed(2)}</td>}
               </tr>
             ))}
