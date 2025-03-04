@@ -12,11 +12,13 @@ const Tables = () => {
   const [data, setData] = useState([]);
   const [dataPlayer, setDataPlayer] = useState([]);
   const [dataGol, setDataGol] = useState([]);
+  const [textValue, setTextValue] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [alerta, setAlerta] = useState('');
   // Dados para modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalUpdate, setModalUpdate] = useState(false);
   const [roundData, setRoundData] = useState({
     rodada: "",
     data: "",
@@ -349,6 +351,81 @@ const Tables = () => {
         fetchPlayerUpdate()
       } 
     }
+  }
+
+  const updateRound = async (id) => {
+    setModalUpdate(true)
+
+    const fetchRound = async () => {
+      try {
+        const response = await fetch(url + 'rounds/' + id, {
+          method: "GET", // O método HTTP
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error("Erro ao buscar os dados.");
+        }
+        const result = await response.json();
+        setTextValue(JSON.stringify(result))
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    await fetchRound()
+    
+
+  }
+
+  const saveUpdate = async (body) => {
+    const bodyUpdate = JSON.parse(body)
+    const id = bodyUpdate.id
+    delete bodyUpdate.id;
+    console.log(bodyUpdate)
+
+    const codigo = prompt('Digite o código verde: ')
+    const fetchRound = async () => {
+      try {
+        const response = await fetch(url + 'rounds/' + id, {
+          method: "PUT", // O método HTTP
+          headers: {
+            "Content-Type": "application/json",
+            "key": codigo
+          },
+          body: JSON.stringify(bodyUpdate)
+        });
+
+        const result = await response.json();
+        setAlerta(result.message)
+        alert(result.message)
+
+        const responseRound = await fetch(url + 'rounds', {
+          method: "GET", // O método HTTP
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+        const resultRound = await responseRound.json();
+        setData(resultRound);
+        setModalUpdate(false)
+
+        return response.status === 201 ? 1 : 0;
+      } catch (err) {
+        setError(err.message);
+        setModalUpdate(false)
+      } finally {
+        setModalUpdate(false)
+        setLoading(false);
+      }
+    }
+
+    await fetchRound()
+
   }
   
 
@@ -770,7 +847,7 @@ const Tables = () => {
         </div>
       )}
       </div>
-      {isModalOpen ? "" : <div className="div-round-table">
+      {isModalOpen || modalUpdate ? "" : <div className="div-round-table">
         <table className="round-table">
           <thead>
             <tr>
@@ -813,11 +890,25 @@ const Tables = () => {
                 <td>{row.segundo}</td>
                 <td>{row.terceiro}</td>
                 <td>{row.quarto}</td>
+                <td><button onClick={() => updateRound(row.numero)}>&#x270E;</button></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>}
+      {modalUpdate ? <div className="div-round-table">
+        <textarea id="update"
+          style={{ width: "80%", height: "70%" }}
+          value={textValue}
+          onChange={(e) => setTextValue(e.target.value)}/>
+        <br></br>
+        <button onClick={() => saveUpdate(textValue)}>Salvar</button>
+        <button onClick={() => setModalUpdate(false)}>Voltar</button>
+      <div/>
+      </div> 
+      
+      
+      : ''}
     </div>
   );
 };
