@@ -37,7 +37,7 @@ const logosInput = [
     { id: 6, src: patrocicio6, alt: "Logo 6", link: "https://www.instagram.com/greenvidros" },
     { id: 7, src: patrocicio7, alt: "Logo 7", link: "https://www.instagram.com/clinicapsicmed"},
     { id: 8, src: patrocicio8, alt: "Logo 8", link: "https://www.instagram.com/_jmcarestetica"},
-    { id: 9, src: patrocicio9, alt: "Logo 9", link: "https://www.instagram.com/garagem_maraponga"},
+    { id: 9, src: patrocicio9, alt: "Logo 9", link: "https://www.instagram.com/vibratomotos"},
     { id: 10, src: patrocicio10, alt: "Logo 10", link: "https://www.instagram.com/svoiceoficial"},
     { id: 11, src: patrocicio11, alt: "Logo 11", link: "https://www.instagram.com/schatoficial"},
     { id: 12, src: patrocicio12, alt: "Logo 12", link: "https://www.instagram.com/use.smartwatch"}
