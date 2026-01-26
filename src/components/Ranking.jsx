@@ -10,6 +10,14 @@ const Tables = () => {
   const [dataGol, setDataGol] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [modalUpdate, setModalUpdate] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [textValue, setTextValue] = useState('');
+  const [alerta, setAlerta] = useState('');
+  
+  
+  
+  
   // console.log(data, 'data')
   // console.log(dataGol, 'dataGol')
 
@@ -40,11 +48,10 @@ const Tables = () => {
     "cotas2",
     "mediaG",
     "mediaA",
+    "Editar"
   ]);
 
-  // Função para buscar os dados da API
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         const response = await fetch(url + 'player', {
           method: "GET",
@@ -80,6 +87,8 @@ const Tables = () => {
       }
     };
 
+  // Função para buscar os dados da API
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -110,7 +119,7 @@ const Tables = () => {
         return a.cotas - b.cotas; // Menor número de cotas primeiro
       });
   
-      setVisibleColumns(["pos", "jogador", "gols", "cotas2", 'mediaG']);
+      setVisibleColumns(["pos", "jogador", "gols", "cotas2", 'mediaG', 'Editar']);
     } else if (key === "ass") {
       // Ordena por assistências (descendente), depois por cotas (ascendente)
       const sortedDataTotal = dataJog.concat(dataGol)
@@ -194,6 +203,85 @@ const Tables = () => {
     }
   }
 
+    const updateRound = async (id) => {
+    setModalUpdate(true)
+
+    const fetchRanking = async () => {
+      try {
+        const sortedDataTotal = dataJog.concat(dataGol)
+        console.log(sortedDataTotal)
+        const filteredData = sortedDataTotal.filter(player => player.id == id)[0];
+        console.log(filteredData)
+        setTextValue(JSON.stringify(filteredData, null, 2));
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    await fetchRanking()
+    
+  }
+
+  const saveUpdate = async () => {
+    const body = JSON.parse(textValue)
+
+    const bodyUpdate = {
+      nome: body.nome,
+      pontos: body.pontos,
+      cotas: body.cotas,
+      jogos: body.jogos,
+      vitorias: body.vitorias,
+      empates: body.empates,
+      derrotas: body.derrotas,
+      gols_pro: body.gols_pro,
+      gols_contra: body.gols_contra,
+      primeiro: body.primeiro,
+      segundo: body.segundo,
+      terceiro: body.terceiro,
+      quarto: body.quarto,
+      amarelo: body.amarelo,
+      vermelho: body.vermelho,
+      gols: body.gols,
+      ass: body.ass
+    }
+    console.log(bodyUpdate)
+    const id = body.id
+
+    const codigo = prompt('Digite o código verde: ')
+    const fetchRanking = async () => {
+      try {
+        const response = await fetch(url + 'player/' + id, {
+          method: "PUT", // O método HTTP
+          headers: {
+            "Content-Type": "application/json",
+            "key": codigo
+          },
+          body: JSON.stringify(bodyUpdate)
+        });
+
+        const result = await response.json();
+        setAlerta(result.message)
+        alert(response.status === 200 ? "Atualizado com sucesso!" : "Erro ao atualizar.");
+
+        await fetchData()
+        setModalUpdate(false)
+
+        return response.status === 201 ? 1 : 0;
+      } catch (err) {
+        setError(err.message);
+        setModalUpdate(false)
+      } finally {
+        setModalUpdate(false)
+        setLoading(false);
+      }
+    }
+
+    await fetchRanking()
+
+  }
+
   const downloadExcel = () => {
     // Seus dados
     const data = [...dataJog, ...dataGol];
@@ -223,7 +311,7 @@ const Tables = () => {
         <button onClick={() => handleColumnChange("gols")}>Artilharia</button>
         <button onClick={() => handleColumnChange("ass")}>Assistências</button>
       </div>
-      <div className="div-table">
+      {isModalOpen || modalUpdate ? "" : <div className="div-table">
         <table className="ranking-table">
           <thead>
             <tr>
@@ -308,11 +396,25 @@ const Tables = () => {
                 {visibleColumns.includes("cotas2") && <td>{row.cotas}</td>}
                 {visibleColumns.includes("mediaG") && <td>{(row.gols / row.cotas).toFixed(2)}</td>}
                 {visibleColumns.includes("mediaA") && <td>{(row.ass / row.cotas).toFixed(2)}</td>}
+                {visibleColumns.includes("Editar") && <td><button onClick={() => updateRound(row.id)}>&#x270E;</button></td>}
               </tr>
             ))}
           </tbody>
         </table>
+      </div>}
+      {modalUpdate ? <div className="div-round-table">
+        <textarea id="update"
+          style={{ width: "80%", height: '350px' }}
+          value={textValue}
+          onChange={(e) => setTextValue(e.target.value)}/>
+        <br></br>
+        <div className="button-ranking">
+          <button onClick={() => saveUpdate(textValue)}>Salvar</button>
+          <button onClick={() => setModalUpdate(false)}>Voltar</button>
+        </div>
+      <div/>
       </div>
+      : ''}
         <button className="download" onClick={() => downloadExcel()}>⇓ Download</button>
     </div>
   );
