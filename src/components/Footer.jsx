@@ -17,7 +17,7 @@ const Footer = () => {
         </a>
       </div>
       <p className="footer-text">
-        © 2025  Racha Verde. Sempre a maior diversão.
+        © 2026  Racha Verde. Sempre a maior diversão.
       </p>
     </footer>
   );
