@@ -2,18 +2,20 @@ import React from 'react';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import patrocicio1 from "../assets/apoio1.png";
-import patrocicio2 from "../assets/apoio2.png";
-import patrocicio3 from "../assets/apoio3.png";
-import patrocicio4 from "../assets/apoio4.png";
-import patrocicio5 from "../assets/apoio5.png";
-import patrocicio6 from "../assets/apoio6.png";
-import patrocicio7 from "../assets/apoio7.png";
-import patrocicio8 from "../assets/apoio8.png";
-import patrocicio9 from "../assets/apoio9.png";
-import patrocicio10 from "../assets/apoio10.png";
-import patrocicio11 from "../assets/apoio11.png";
-import patrocicio12 from "../assets/apoio12.png";
+import patrocinio1 from "../assets/patrocinio1.png";
+import patrocinio2 from "../assets/patrocinio2.png";
+import patrocinio3 from "../assets/patrocinio3.png";
+import patrocinio4 from "../assets/patrocinio4.png";
+import patrocinio5 from "../assets/patrocinio5.png";
+import patrocinio6 from "../assets/patrocinio6.png";
+import patrocinio7 from "../assets/patrocinio7.png";
+import patrocinio8 from "../assets/patrocinio8.png";
+import patrocinio9 from "../assets/patrocinio9.png";
+import patrocinio10 from "../assets/patrocinio10.png";
+import patrocinio11 from "../assets/patrocinio11.png";
+import patrocinio12 from "../assets/patrocinio12.png";
+import patrocinio13 from "../assets/patrocinio13.png";
+import patrocinio14 from "../assets/patrocinio14.png";
 
 
 const Carousels = () => {
@@ -29,18 +31,20 @@ const Carousels = () => {
   };
 
 const logosInput = [
-    { id: 1, src: patrocicio1, alt: "Logo 1", link: "https://www.instagram.com/yessodonto" },
-    { id: 2, src: patrocicio2, alt: "Logo 2", link: "https://www.instagram.com/regilabenigno" },
-    { id: 3, src: patrocicio3, alt: "Logo 3", link: "https://www.instagram.com/nogueirasexecutive" },
-    { id: 4, src: patrocicio4, alt: "Logo 4", link: "https://www.instagram.com/gustavosimaofotografo" },
-    { id: 5, src: patrocicio5, alt: "Logo 5", link: "https://www.instagram.com/yessacai" },
-    { id: 6, src: patrocicio6, alt: "Logo 6", link: "https://www.instagram.com/greenvidros" },
-    { id: 7, src: patrocicio7, alt: "Logo 7", link: "https://www.instagram.com/clinicapsicmed"},
-    { id: 8, src: patrocicio8, alt: "Logo 8", link: "https://www.instagram.com/_jmcarestetica"},
-    { id: 9, src: patrocicio9, alt: "Logo 9", link: "https://www.instagram.com/vibratomotos"},
-    { id: 10, src: patrocicio10, alt: "Logo 10", link: "https://www.instagram.com/svoiceoficial"},
-    { id: 11, src: patrocicio11, alt: "Logo 11", link: "https://www.instagram.com/schatoficial"},
-    { id: 12, src: patrocicio12, alt: "Logo 12", link: "https://www.instagram.com/use.smartwatch"}
+    { id: 1, src: patrocinio1, alt: "Logo 1", link: "https://www.instagram.com/jnpneusprime" },
+    { id: 2, src: patrocinio2, alt: "Logo 2", link: "https://www.instagram.com/regilabenigno" },
+    { id: 3, src: patrocinio3, alt: "Logo 3", link: "https://www.instagram.com/nogueirasexecutive" },
+    { id: 4, src: patrocinio4, alt: "Logo 4", link: "https://www.instagram.com/gustavosimaofotografo" },
+    { id: 5, src: patrocinio5, alt: "Logo 5", link: "https://www.instagram.com/kiacai.heroisdoacre" },
+    { id: 6, src: patrocinio6, alt: "Logo 6", link: "https://www.instagram.com/greenvidros" },
+    { id: 7, src: patrocinio7, alt: "Logo 7", link: "https://www.instagram.com/rolforiginal"},
+    { id: 8, src: patrocinio8, alt: "Logo 8", link: "https://www.wa.link/zn34pk"},
+    { id: 9, src: patrocinio9, alt: "Logo 9", link: "https://www.instagram.com/vibratomotos"},
+    { id: 10, src: patrocinio10, alt: "Logo 10", link: "https://www.instagram.com/svoiceoficial"},
+    { id: 11, src: patrocinio11, alt: "Logo 11", link: "https://www.instagram.com/schatoficial"},
+    { id: 12, src: patrocinio12, alt: "Logo 12", link: "https://www.instagram.com/use.smartwatch"},
+    { id: 13, src: patrocinio13, alt: "Logo 13", link: "https://www.instagram.com/jonathanvieira.ads"},
+    { id: 14, src: patrocinio14, alt: "Logo 14", link: "https://www.instagram.com/arenamesafarta"}
   ];
 
 
