@@ -1,34 +1,39 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import "../../src/styles.css";
+import { FaHome, FaFutbol, FaTrophy, FaSun, FaMoon } from "react-icons/fa";
 import logo from "../assets/logo.png";
+import { useTheme } from "../hooks";
+
+const links = [
+  { to: "/", label: "Home", icon: <FaHome /> },
+  { to: "/rodadas", label: "Rodadas", icon: <FaFutbol /> },
+  { to: "/ranking", label: "Ranking", icon: <FaTrophy /> },
+];
 
 const Header = () => {
+  const [theme, toggleTheme] = useTheme();
+
   return (
     <header className="header">
-      <div className="logo">
-        <img src={logo} alt="Logo" />
+      <div className="container header-inner">
+        <NavLink to="/" className="brand">
+          <img src={logo} alt="Racha Verde" />
+          <span>Racha Verde</span>
+        </NavLink>
+        <nav className="nav">
+          {links.map(({ to, label, icon }) => (
+            <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+              {icon}
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="header-actions">
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Alternar tema claro/escuro" title="Alternar tema">
+            {theme === "dark" ? <FaSun /> : <FaMoon />}
+          </button>
+        </div>
       </div>
-      <nav className="nav">
-        <NavLink
-          to="/"
-          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
-        >
-          Home
-        </NavLink>
-        <NavLink
-          to="/rodadas"
-          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
-        >
-          Rodadas
-        </NavLink>
-        <NavLink
-          to="/ranking"
-          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
-        >
-          Ranking
-        </NavLink>
-      </nav>
     </header>
   );
 };

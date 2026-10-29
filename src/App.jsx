@@ -7,11 +7,12 @@ import Rodadas from "./pages/Rodadas";
 import Ranking from "./pages/Ranking";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "./styles/theme.css";
 import "./styles.css";
 
 const App = () => {
   return (
-    <div className="app" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <div className="app">
       <Header />
       <main>
         <Routes>

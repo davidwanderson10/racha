@@ -1,7 +1,5 @@
 import React from 'react';
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import patrocinio1 from "../assets/patrocinio1.png";
 import patrocinio2 from "../assets/patrocinio2.png";
 import patrocinio3 from "../assets/patrocinio3.png";
@@ -21,13 +19,17 @@ import patrocinio14 from "../assets/patrocinio14.png";
 const Carousels = () => {
 
   const settings = {
-    dots: true, // Exibe os pontos abaixo do carrossel
-    infinite: true, // Loop infinito
-    speed: 500, // Velocidade da transição
-    slidesToShow: 3, // Quantidade de logos visíveis
-    slidesToScroll: 1, // Quantos slides mover ao clicar
-    nextArrow: <SampleNextArrow />, // Personalizar seta para próximo
-    prevArrow: <SamplePrevArrow />, // Personalizar seta para anterior
+    dots: true,
+    infinite: true,
+    speed: 500,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    responsive: [
+      { breakpoint: 900, settings: { slidesToShow: 3 } },
+      { breakpoint: 600, settings: { slidesToShow: 2 } },
+    ],
   };
 
 const logosInput = [
@@ -54,55 +56,18 @@ const logosInput = [
 
 
   return (
-    <div className='div-carousel'>
-        <p>Patrocinadores:</p>
+    <section className="home-section sponsors">
+      <h2 className="section-title">Patrocinadores</h2>
       <Slider {...settings}>
         {logos.map((logo) => (
-          <div className='carousel-img' key={logo.id}>
-            <a href={logo.link} target="_blank" rel="noopener noreferrer">
-              <img
-                src={logo.src}
-                alt={logo.alt}
-              />
+          <div key={logo.id}>
+            <a className="sponsor-logo" href={logo.link} target="_blank" rel="noopener noreferrer">
+              <img src={logo.src} alt={logo.alt} />
             </a>
           </div>
         ))}
       </Slider>
-    </div>
-  );
-};
-
-// Personalizando seta "Próximo"
-const SampleNextArrow = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: "block",
-        background: "black",
-        borderRadius: "50%",
-      }}
-      onClick={onClick}
-    />
-  );
-};
-
-// Personalizando seta "Anterior"
-const SamplePrevArrow = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: "block",
-        background: "black",
-        borderRadius: "50%",
-      }}
-      onClick={onClick}
-    />
+    </section>
   );
 };
 
