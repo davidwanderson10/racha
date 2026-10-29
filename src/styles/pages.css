@@ -1,0 +1,111 @@
+/* ===== Estrutura comum das páginas internas ===== */
+.page { padding-top: 24px; }
+.page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.page-title { font-family: var(--font-display); font-size: 2.6rem; letter-spacing: 0.04em; margin: 0; line-height: 1; }
+.page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.page .podium { margin-top: 4px; }
+
+/* ===== Tabela de dados ===== */
+.table-wrap { margin-top: 18px; overflow: auto; max-height: 70vh; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.data-table th, .data-table td { padding: 10px 12px; text-align: center; white-space: nowrap; border-bottom: 1px solid var(--border); }
+.data-table th { position: sticky; top: 0; z-index: 2; background: var(--bg-elev-2); color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.data-table tbody tr:hover { background: var(--bg-elev-2); }
+.data-table td.name { text-align: left; font-weight: 600; }
+.data-table td.pos { font-family: var(--font-display); font-size: 1.15rem; color: var(--accent); }
+.data-table th:nth-child(2), .data-table td.name { position: sticky; left: 0; background: var(--bg-elev); }
+.data-table th:nth-child(2) { background: var(--bg-elev-2); text-align: left; z-index: 3; }
+.data-table tbody tr:hover td.name { background: var(--bg-elev-2); }
+.data-table img { vertical-align: middle; }
+
+.icon-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; display: inline-grid; place-items: center; padding: 0; }
+.icon-btn:hover { color: var(--text); background: var(--bg-elev-2); }
+
+/* ===== Cards do ranking no celular ===== */
+.rk-cards { display: none; margin-top: 16px; flex-direction: column; gap: 8px; }
+.rk-card { padding: 0; box-shadow: none; }
+.rk-card summary { list-style: none; display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; }
+.rk-card summary::-webkit-details-marker { display: none; }
+.rk-card .pos { font-family: var(--font-display); font-size: 1.4rem; color: var(--accent); min-width: 32px; text-align: center; }
+.rk-card .name { font-weight: 600; flex: 1; word-break: break-word; }
+.rk-card .main { font-family: var(--font-display); font-size: 1.9rem; color: var(--gold); text-align: right; line-height: 1; }
+.rk-card .main small { display: block; font: 500 0.6rem var(--font-body); color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.rk-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0 14px 12px; }
+.rk-details div { background: var(--bg-elev-2); border-radius: 10px; padding: 8px; text-align: center; }
+.rk-details span { display: block; font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.rk-details b { font-size: 1rem; }
+.rk-edit { margin: 0 14px 12px; padding: 6px 14px; font-size: 0.8rem; }
+
+/* ===== Modal ===== */
+.modal-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(0, 0, 0, 0.6); display: grid; place-items: center; padding: 16px; }
+.modal { width: 100%; max-width: 560px; padding: 22px; max-height: 90vh; overflow: auto; }
+.modal-text { width: 100%; height: 340px; resize: vertical; font: 0.85rem/1.4 ui-monospace, Menlo, Consolas, monospace; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+
+@media (max-width: 720px) {
+  .rk-table { display: none; }
+  .rk-cards { display: flex; }
+  .page-title { font-size: 2.1rem; }
+}
+
+/* ===== Rodadas ===== */
+.segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--bg-elev); }
+.segmented button { border: 0; background: transparent; color: var(--text-muted); font: 600 0.85rem var(--font-body); padding: 9px 16px; cursor: pointer; }
+.segmented button.active { background: var(--brand); color: var(--on-brand); }
+
+.round-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+.round-card { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.round-card header { display: flex; justify-content: space-between; align-items: flex-start; }
+.round-num { display: block; font-family: var(--font-display); font-size: 1.7rem; letter-spacing: 0.04em; line-height: 1; }
+.round-date { font-size: 0.8rem; color: var(--text-muted); }
+.round-podium { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-weight: 600; font-size: 0.9rem; }
+.round-podium li { background: var(--bg-elev-2); border-radius: 10px; padding: 7px 10px; display: flex; gap: 8px; align-items: center; }
+.round-podium li.champ { grid-column: 1 / -1; background: var(--brand); color: var(--on-brand); }
+.round-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center; }
+.round-stats b { display: block; font-family: var(--font-display); font-size: 1.7rem; color: var(--accent); line-height: 1; }
+.round-stats span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.round-stats img { height: 14px; vertical-align: middle; }
+.round-card footer { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; border-top: 1px solid var(--border); padding-top: 10px; }
+.round-card footer span { color: var(--text-muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; margin-right: 8px; }
+.round-card footer b { color: var(--gold); margin-left: 4px; }
+
+/* Formulário de nova rodada */
+.modal-wide { max-width: 1040px; }
+.modal-top { display: flex; align-items: center; justify-content: space-between; }
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+.field > span { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.inp {
+  font: 0.9rem var(--font-body); color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; min-width: 0; width: 100%;
+}
+.inp:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.inp.score { text-align: center; padding: 8px 4px; }
+.teams-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.form-cols { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+.team-box { background: var(--bg-elev-2); border-radius: 14px; padding: 12px; }
+.team-box h3 { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.05em; margin: 0 0 8px; color: var(--accent); }
+.team-box h4 { margin: 14px 0 6px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+.player-head, .player-row { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr; gap: 6px; align-items: center; }
+.player-head { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-bottom: 4px; }
+.player-head span:first-child { text-align: left; }
+.player-head img { height: 14px; }
+.player-row { margin-bottom: 5px; }
+.match-row { display: grid; grid-template-columns: 1.4fr 0.6fr auto 0.6fr 1.4fr; gap: 6px; align-items: center; margin-bottom: 6px; }
+.match-row .team-name { font-size: 0.8rem; font-weight: 600; text-align: center; }
+.pair { display: grid; grid-template-columns: 1fr 70px; gap: 6px; }
+
+@media (max-width: 900px) {
+  .teams-grid, .form-cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .round-grid { grid-template-columns: 1fr; }
+  .page-actions { width: 100%; }
+}
+.form-row .field { width: 200px; max-width: 100%; }
+@media (max-width: 720px) {
+  .modal-wide { padding: 14px; }
+  .player-head, .player-row { grid-template-columns: 1.6fr repeat(4, 0.7fr); gap: 4px; }
+  .player-row .inp { padding: 7px 4px; font-size: 0.8rem; }
+  .match-row { grid-template-columns: 1.3fr 0.6fr auto 0.6fr 1.3fr; }
+}

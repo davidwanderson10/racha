@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Podium from "./Podium";
 const url = import.meta.env.VITE_API_URL || ''
-
-const medals = ["🥇", "🥈", "🥉"];
 
 // Mesmo critério do Ranking: maior valor primeiro, desempate por menos cotas
 const byStat = (key) => (a, b) => b[key] - a[key] || a.cotas - b.cotas;
@@ -59,9 +58,6 @@ const TopPlayers = () => {
   const topScorer = [...everyone].sort(byStat("gols"))[0];
   const topAssist = [...everyone].sort(byStat("ass"))[0];
 
-  // Ordem visual do pódio: 2º, 1º, 3º
-  const order = [1, 0, 2].filter((i) => podium[i]);
-
   return (
     <>
       <section className="home-section">
@@ -79,17 +75,7 @@ const TopPlayers = () => {
             </button>
           ))}
         </div>
-        {podium.length === 0 && <p className="empty-note">Sem dados para esta lista.</p>}
-        <div className="podium">
-          {order.map((i) => (
-            <div key={`${tab.key}-${podium[i].id ?? i}`} className={`card podium-item p${i + 1}`}>
-              <div className="podium-medal">{medals[i]}</div>
-              <div className="podium-name">{podium[i].nome}</div>
-              <div className="podium-points">{podium[i][tab.stat]}</div>
-              <div className="podium-sub">{tab.unit} · {podium[i].cotas} cotas</div>
-            </div>
-          ))}
-        </div>
+        <Podium items={podium} stat={tab.stat} unit={tab.unit} tabKey={tab.key} />
       </section>
 
       {topScorer && topAssist && (

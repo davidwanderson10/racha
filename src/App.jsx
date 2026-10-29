@@ -8,7 +8,7 @@ import Ranking from "./pages/Ranking";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./styles/theme.css";
-import "./styles.css";
+import "./styles/pages.css";
 
 const App = () => {
   return (

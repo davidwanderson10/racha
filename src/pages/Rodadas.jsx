@@ -3,7 +3,9 @@ import Rounds from "../components/Rounds";
 
 const Rodadas = () => {
   return (
-    <Rounds />
+    <div className="container page">
+      <Rounds />
+    </div>
   );
 };
 

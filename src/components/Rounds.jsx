@@ -3,6 +3,7 @@ const url = import.meta.env.VITE_API_URL || ''
 import amarelo from "../assets/amarelo.png";
 import vermelho from "../assets/verm.png";
 import * as XLSX from 'xlsx';
+import { FaPlus, FaFileExcel, FaPen, FaTimes } from "react-icons/fa";
 
 
 // import vermelho from "../assets/vermelho.png";
@@ -16,6 +17,7 @@ const Tables = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [alerta, setAlerta] = useState('');
+  const [view, setView] = useState('cards');
   // Dados para modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalUpdate, setModalUpdate] = useState(false);
@@ -122,8 +124,8 @@ const Tables = () => {
   }, []); // O array vazio faz com que a requisição seja feita apenas uma vez ao montar o componente
 
 
-  if (loading) return <p>Carregando dados...</p>;
-  if (error) return <p>Erro: {error}</p>;
+  if (loading) return <div className="skeleton" style={{ height: 320, margin: "24px 0" }} />;
+  if (error) return <p className="empty-note">Erro: {error}</p>;
 
 
   const handleInputChange = (e, timeIndex, jogadorIndex, campo) => {
@@ -429,486 +431,318 @@ const Tables = () => {
   }
   
 
+  // ---- Apoio da interface (não altera dados enviados à API) ----
+  const formatDate = (d) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || '');
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+  };
+
+  const downloadExcel = () => {
+    const rows = data.map((r) => ({
+      rodada: r.numero,
+      data: r.data,
+      gols: r.gols,
+      assistencias: r.assistencias,
+      amarelos: r.amarelos,
+      vermelhos: r.vermelhos,
+      artilheiro: r.artilheiro?.nome,
+      artilheiro_gols: r.artilheiro?.gols,
+      assistente: r.assistente?.nome,
+      assistente_assistencias: r.assistente?.assistencias,
+      primeiro: r.primeiro,
+      segundo: r.segundo,
+      terceiro: r.terceiro,
+      quarto: r.quarto,
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rodadas");
+    XLSX.writeFile(wb, "rodadas.xlsx");
+  };
+
+  const closeNewRound = () => {
+    setRoundData(resetData);
+    setIsModalOpen(false);
+  };
+
+  const setConfronto = (index, campo, valor) =>
+    setRoundData((prev) => {
+      const updated = [...prev.confrontos];
+      updated[index][campo] = valor;
+      return { ...prev, confrontos: updated };
+    });
+
+  // Mata-mata (3º lugar = 6, final = 7): um time não pode aparecer duas vezes
+  const knockoutSelect = (index, campo) => {
+    const taken = [6, 7].flatMap((i) => [['timeA', i], ['timeB', i]])
+      .filter(([c, i]) => !(i === index && c === campo))
+      .map(([c, i]) => roundData.confrontos[i][c]);
+    return (
+      <select
+        className="inp"
+        value={roundData.confrontos[index][campo]}
+        onChange={(e) => setConfronto(index, campo, e.target.value)}
+      >
+        <option value="">Selecione...</option>
+        {roundData.times.filter((t) => !taken.includes(t.nome)).map((t, i) => (
+          <option key={i} value={t.nome}>{t.nome}</option>
+        ))}
+      </select>
+    );
+  };
+
+  const scoreInput = (index, campo) => (
+    <input
+      className="inp score"
+      type="number"
+      min={0}
+      value={roundData.confrontos[index][campo]}
+      onChange={(e) => setConfronto(index, campo, Number(e.target.value))}
+    />
+  );
+
+  const classificacaoSelect = (label) => (
+    <label className="field" key={label}>
+      <span>{label}</span>
+      <select
+        className="inp"
+        value={roundData.times.find((time) => time.classificacao === label)?.nome || ""}
+        onChange={(e) => handleClassificacaoChange(e.target.value, label)}
+      >
+        <option value="">Selecione...</option>
+        {roundData.times
+          .filter((time) => !["Campeão", "Vice", "Terceiro", "Quarto"].filter((c) => c !== label).includes(time.classificacao))
+          .map((time, i) => (
+            <option key={i} value={time.nome}>{time.nome}</option>
+          ))}
+      </select>
+    </label>
+  );
+
+  const setStat = (grupo, campo, valor) =>
+    setRoundData((prev) => ({ ...prev, [grupo]: { ...prev[grupo], [campo]: valor } }));
+
+  const medals = ["🥇", "🥈", "🥉", "4º"];
+
   return (
-    <div className="div-round">
-      <div className="round-button">
-      {isModalOpen ? " ": <button onClick={() => setIsModalOpen(true)}>Nova Rodada</button>}
-      <div/>
+    <div>
+      <div className="page-head">
+        <h1 className="page-title">Rodadas</h1>
+        <div className="page-actions">
+          <div className="segmented" role="group" aria-label="Visualização">
+            <button className={view === 'cards' ? 'active' : ''} onClick={() => setView('cards')}>Cards</button>
+            <button className={view === 'table' ? 'active' : ''} onClick={() => setView('table')}>Tabela</button>
+          </div>
+          <button className="btn btn-ghost" onClick={downloadExcel}><FaFileExcel /> Exportar Excel</button>
+          <button className="btn" onClick={() => setIsModalOpen(true)}><FaPlus /> Nova rodada</button>
+        </div>
+      </div>
+
+      {data.length === 0 && <p className="empty-note">Nenhuma rodada cadastrada.</p>}
+
+      {view === 'cards' ? (
+        <div className="round-grid">
+          {data.map((row, index) => (
+            <article key={index} className="card round-card">
+              <header>
+                <div>
+                  <span className="round-num">Rodada {row.numero}</span>
+                  <span className="round-date">{formatDate(row.data)}</span>
+                </div>
+                <button className="icon-btn" onClick={() => updateRound(row.numero)} aria-label={`Editar rodada ${row.numero}`}><FaPen /></button>
+              </header>
+              <ol className="round-podium">
+                {[row.primeiro, row.segundo, row.terceiro, row.quarto].map((time, i) => (
+                  <li key={i} className={i === 0 ? "champ" : ""}><span>{medals[i]}</span>{time}</li>
+                ))}
+              </ol>
+              <div className="round-stats">
+                <div><b>{row.gols}</b><span>⚽ Gols</span></div>
+                <div><b>{row.assistencias}</b><span>Assist.</span></div>
+                <div><b>{row.amarelos}</b><span><img src={amarelo} alt="amarelos" /></span></div>
+                <div><b>{row.vermelhos}</b><span><img src={vermelho} alt="vermelhos" /></span></div>
+              </div>
+              <footer>
+                <div><span>Artilheiro</span>{row.artilheiro.nome} <b>{row.artilheiro.gols}</b></div>
+                <div><span>Assistente</span>{row.assistente.nome} <b>{row.assistente.assistencias}</b></div>
+              </footer>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="card table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Rodada</th>
+                <th>Data</th>
+                <th title="Gols">⚽</th>
+                <th title="Assistências">A</th>
+                <th><img src={amarelo} alt="amarelo" style={{ width: 12, height: 15 }} /></th>
+                <th><img src={vermelho} alt="vermelhos" style={{ width: 12, height: 15 }} /></th>
+                <th>Artilheiros</th>
+                <th>Assistentes</th>
+                <th title="Campeão">🏆</th>
+                <th>🥈</th>
+                <th>🥉</th>
+                <th>4º</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row, index) => (
+                <tr key={index}>
+                  <td className="pos">{row.numero}</td>
+                  <td>{formatDate(row.data)}</td>
+                  <td>{row.gols}</td>
+                  <td>{row.assistencias}</td>
+                  <td>{row.amarelos}</td>
+                  <td>{row.vermelhos}</td>
+                  <td>{row.artilheiro.nome + ' - ' + row.artilheiro.gols} Gols</td>
+                  <td>{row.assistente.nome + ' - ' + row.assistente.assistencias} Ass.</td>
+                  <td>{row.primeiro}</td>
+                  <td>{row.segundo}</td>
+                  <td>{row.terceiro}</td>
+                  <td>{row.quarto}</td>
+                  <td><button className="icon-btn" onClick={() => updateRound(row.numero)} aria-label={`Editar rodada ${row.numero}`}><FaPen /></button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2 style={{display: 'flex', justifyContent: 'center'}}>Nova Rodada</h2>
-            <div className="modal-field" style={{display: 'flex', justifyItems: 'center', flexDirection: 'column' }}>
-            <button onClick={() => {setRoundData(resetData);setIsModalOpen(false);}} 
-              style={{ 
-                      display: 'flex', 
-                      justifyContent: 'center', 
-                      alignItems: 'center',
-                      fontSize: '20px',
-                      fontWeight: 'bold', 
-                      backgroundColor: '#a81a1a',  
-                      color: "whitesmoke",
-                      marginLeft: '90%',
-                      width: '35px',
-                      height: '35px',
-                      borderRadius: '50px',
-                      boxShadow: 'none'
-            }}>X</button>
-              <label>Rodada:</label>
-              <input style={{width: '18%', height: '25px', margin: '5px', borderRadius: '8px'}}
-                type="number"
-                value={roundData.rodada}
-                onChange={(e) => setRoundData({ ...roundData, rodada: Number(e.target.value) })}
-              />
-              <label>Data:</label>
-              <input style={{width: '18%', height: '25px', margin: '5px', borderRadius: '8px'}}
-                type="date"
-                value={roundData.data}
-                onChange={(e) => setRoundData({ ...roundData, data: e.target.value })}
-              />
+        <div className="modal-backdrop">
+          <div className="card modal modal-wide">
+            <div className="modal-top">
+              <h2 className="section-title">Nova rodada</h2>
+              <button className="icon-btn" onClick={closeNewRound} aria-label="Fechar"><FaTimes /></button>
             </div>
 
-            {roundData.times.map((time, timeIndex) => (
-              <div key={timeIndex} className="time-section">
-                <h3 style={{textAlign: 'center', margin: '50px 0px -10px 0px', backgroundColor: '#004d00b1'}}>{time.nome}</h3>
-                <div style={{display: 'flex', justifyContent: 'left'}}>
-                  <p style={{marginLeft: '7%'}}>Nome</p>
-                  <p style={{marginLeft: '15%'}}>Gols</p>
-                  <p style={{marginLeft: '13%'}}>Assistências</p>
-                  <p style={{marginLeft: '11%'}}>Amarelos</p>
-                  <p style={{marginLeft: '12%'}}>Vermelhos</p>
-                <div/>
-                </div>
-                {time.jogadores.map((jogador, jogadorIndex) => (
-                  <div key={jogadorIndex} className="player-row">
-                    <select style={{width: '18%', height: '25px', margin: '5px', borderRadius: '8px'}}
-                      value={jogador.nome}
-                      onChange={(e) => handleInputChange(e, timeIndex, jogadorIndex, "nome")}
-                    >
-                      <option value="">Selecione</option>
-                      {jogadorIndex === 0
-                        ? dataGol.map((gol) => <option key={gol.id} value={gol.nome}>{gol.nome}</option>)
-                        : dataPlayer.map((player) => <option key={player.id} value={player.nome}>{player.nome}</option>)}
-                    </select>
-                    <input style={{width: '18%', height: '25px', margin: '5px', borderRadius: '8px'}}
-                      type="number"
-                      min={0}
-                      placeholder="Gols"
-                      value={jogador.gols}
-                      onChange={(e) => handleInputChange(e, timeIndex, jogadorIndex, "gols")}
-                    />
-                    <input style={{width: '18%', height: '25px', margin: '5px', borderRadius: '8px'}}
-                      type="number"
-                      min={0}
-                      placeholder="Assistências"
-                      value={jogador.assistencias}
-                      onChange={(e) => handleInputChange(e, timeIndex, jogadorIndex, "assistencias")}
-                    />
-                    <input style={{width: '18%', height: '25px', margin: '5px', borderRadius: '8px'}}
-                      type="number"
-                      min={0}
-                      placeholder="Amarelos"
-                      value={jogador.amarelos}
-                      onChange={(e) => handleInputChange(e, timeIndex, jogadorIndex, "amarelos")}
-                    />
-                    <input style={{width: '18%', height: '25px', margin: '5px', borderRadius: '8px'}}
-                      type="number"
-                      min={0}
-                      placeholder="Vermelhos"
-                      value={jogador.vermelhos}
-                      onChange={(e) => handleInputChange(e, timeIndex, jogadorIndex, "vermelhos")}
-                    />
+            <div className="form-row">
+              <label className="field">
+                <span>Rodada</span>
+                <input className="inp" type="number" value={roundData.rodada}
+                  onChange={(e) => setRoundData({ ...roundData, rodada: Number(e.target.value) })} />
+              </label>
+              <label className="field">
+                <span>Data</span>
+                <input className="inp" type="date" value={roundData.data}
+                  onChange={(e) => setRoundData({ ...roundData, data: e.target.value })} />
+              </label>
+            </div>
+
+            <div className="teams-grid">
+              {roundData.times.map((time, timeIndex) => (
+                <section key={timeIndex} className="team-box">
+                  <h3>{time.nome}</h3>
+                  <div className="player-head">
+                    <span>Jogador</span><span>⚽</span><span>A</span>
+                    <span><img src={amarelo} alt="amarelos" /></span>
+                    <span><img src={vermelho} alt="vermelhos" /></span>
                   </div>
-                ))}
-              </div>
-            ))}
-            
-            <div style={{ display: "flex", justifyContent: "space-around", padding: "20px" }}>
-              {/* Confrontos */}
-              <div className="confrontos">
+                  {time.jogadores.map((jogador, jogadorIndex) => (
+                    <div key={jogadorIndex} className="player-row">
+                      <select className="inp"
+                        value={jogador.nome}
+                        onChange={(e) => handleInputChange(e, timeIndex, jogadorIndex, "nome")}
+                      >
+                        <option value="">{jogadorIndex === 0 ? "Goleiro" : "Selecione"}</option>
+                        {jogadorIndex === 0
+                          ? dataGol.map((gol) => <option key={gol.id} value={gol.nome}>{gol.nome}</option>)
+                          : dataPlayer.map((player) => <option key={player.id} value={player.nome}>{player.nome}</option>)}
+                      </select>
+                      {[["gols", "Gols"], ["assistencias", "Assistências"], ["amarelos", "Amarelos"], ["vermelhos", "Vermelhos"]].map(([campo, label]) => (
+                        <input key={campo} className="inp score" type="number" min={0}
+                          aria-label={label} placeholder={label}
+                          value={jogador[campo]}
+                          onChange={(e) => handleInputChange(e, timeIndex, jogadorIndex, campo)} />
+                      ))}
+                    </div>
+                  ))}
+                </section>
+              ))}
+            </div>
+
+            <div className="form-cols">
+              <section className="team-box">
                 <h3>Confrontos</h3>
                 {roundData.confrontos.slice(0, 6).map((confronto, index) => (
-                  <div key={index} style={{ marginBottom: "10px", borderRadius: '8px'}}>
-                    <input
-                      type="text"
-                      value={roundData.confrontos[index].timeA}
-                      readOnly
-                      style={{ width: "100px", textAlign: "center" }}
-                    />
-                    <input
-                      type="number"
-                      min={0}
-                      value={confronto.golsA}
-                      onChange={(e) =>
-                        setRoundData((prev) => {
-                          const updated = [...prev.confrontos];
-                          updated[index].golsA = Number(e.target.value);
-                          return { ...prev, confrontos: updated };
-                        })
-                      }
-                      style={{ width: '40px', margin: "0 5px", textAlign: "center" }}
-                    />
-                    X
-                    <input
-                      type="number"
-                      min={0}
-                      value={confronto.golsB}
-                      onChange={(e) =>
-                        setRoundData((prev) => {
-                          const updated = [...prev.confrontos];
-                          updated[index].golsB = Number(e.target.value);
-                          return { ...prev, confrontos: updated };
-                        })
-                      }
-                      style={{ width: '40px', margin: "0 5px", textAlign: "center" }}
-                    />
-                    <input
-                      type="text"
-                      value={roundData.confrontos[index].timeB}
-                      readOnly
-                      style={{ width: "100px", textAlign: "center" }}
-                    />
+                  <div key={index} className="match-row">
+                    <span className="team-name">{confronto.timeA}</span>
+                    {scoreInput(index, 'golsA')}
+                    <b>X</b>
+                    {scoreInput(index, 'golsB')}
+                    <span className="team-name">{confronto.timeB}</span>
                   </div>
                 ))}
-
-                <h4>Terceiro Lugar</h4>
-                <div style={{ marginBottom: "10px" }}>
-                    <select
-                      style={{ width: "100px", textAlign: "center" }}
-                      value={roundData.confrontos[6].timeA}
-                      required
-                      onChange={(e) =>
-                        setRoundData((prev) => {
-                          const updated = [...prev.confrontos];
-                          updated[6].timeA = e.target.value;
-                          return { ...prev, confrontos: updated };
-                        })
-                      }
-                    ><option value="">Selecione...</option>
-                    {roundData.times
-                    .filter((time) => time.nome !== roundData.confrontos[6].timeB && time.nome !== roundData.confrontos[7].timeA && time.nome !== roundData.confrontos[7].timeB)
-                    .map((time, i) => (
-                      <option key={i} value={time.nome}>
-                        {time.nome}
-                      </option>
-                    ))}
-                    </select>
-                  <input
-                    type="number"
-                    min={0}
-                    value={roundData.confrontos[6].golsA}
-                    onChange={(e) =>
-                      setRoundData((prev) => {
-                        const updated = [...prev.confrontos];
-                        updated[6].golsA = Number(e.target.value);
-                        return { ...prev, confrontos: updated };
-                      })
-                    }
-                    style={{ width: '40px', margin: "0 5px", textAlign: "center" }}
-                  />
-                  X
-                  <input
-                    type="number"
-                    min={0}
-                    value={roundData.confrontos[6].golsB}
-                    onChange={(e) =>
-                      setRoundData((prev) => {
-                        const updated = [...prev.confrontos];
-                        updated[6].golsB = Number(e.target.value);
-                        return { ...prev, confrontos: updated };
-                      })
-                    }
-                    style={{ width: '40px', margin: "0 5px", textAlign: "center" }}
-                  />
-                  <select
-                      style={{ width: "100px", textAlign: "center" }}
-                      value={roundData.confrontos[6].timeB}
-                      onChange={(e) =>
-                        setRoundData((prev) => {
-                          const updated = [...prev.confrontos];
-                          updated[6].timeB = e.target.value;
-                          return { ...prev, confrontos: updated };
-                        })
-                      }
-                    ><option value="">Selecione...</option>
-                      {roundData.times
-                    .filter((time) => time.nome !== roundData.confrontos[6].timeA && time.nome !== roundData.confrontos[7].timeA && time.nome !== roundData.confrontos[7].timeB)
-                    .map((time, i) => (
-                      <option key={i} value={time.nome}>
-                        {time.nome}
-                      </option>
-                    ))}
-                    </select>
+                <h4>Terceiro lugar</h4>
+                <div className="match-row">
+                  {knockoutSelect(6, 'timeA')}
+                  {scoreInput(6, 'golsA')}
+                  <b>X</b>
+                  {scoreInput(6, 'golsB')}
+                  {knockoutSelect(6, 'timeB')}
                 </div>
-
                 <h4>Final</h4>
-                <div style={{ marginBottom: "10px" }}>
-                <select style={{ width: "100px", textAlign: "center" }}
-                      value={roundData.confrontos[7].timeA}
-                      onChange={(e) =>
-                        setRoundData((prev) => {
-                          const updated = [...prev.confrontos];
-                          updated[7].timeA = e.target.value;
-                          return { ...prev, confrontos: updated };
-                        })
-                      }
-                    ><option value="">Selecione...</option>
-                      {roundData.times
-                    .filter((time) => time.nome !== roundData.confrontos[6].timeA && time.nome !== roundData.confrontos[6].timeB && time.nome !== roundData.confrontos[7].timeB)
-                    .map((time, i) => (
-                      <option key={i} value={time.nome}>
-                        {time.nome}
-                      </option>
-                    ))}
-                    </select>
-                  <input
-                    type="number"
-                    min={0}
-                    value={roundData.confrontos[7].golsA}
-                    onChange={(e) =>
-                      setRoundData((prev) => {
-                        const updated = [...prev.confrontos];
-                        updated[7].golsA = Number(e.target.value);
-                        return { ...prev, confrontos: updated };
-                      })
-                    }
-                    style={{ width: '40px', margin: "0 5px", textAlign: "center" }}
-                  />
-                  X
-                  <input
-                    type="number"
-                    min={0}
-                    value={roundData.confrontos[7].golsB}
-                    onChange={(e) =>
-                      setRoundData((prev) => {
-                        const updated = [...prev.confrontos];
-                        updated[7].golsB = Number(e.target.value);
-                        return { ...prev, confrontos: updated };
-                      })
-                    }
-                    style={{ width: "40px", margin: "0 5px", textAlign: "center" }}
-                  />
-                  <select style={{ width: "100px", textAlign: "center" }}
-                      value={roundData.confrontos[7].timeB}
-                      onChange={(e) =>
-                        setRoundData((prev) => {
-                          const updated = [...prev.confrontos];
-                          updated[7].timeB = e.target.value;
-                          return { ...prev, confrontos: updated };
-                        })
-                      }
-                    ><option value="">Selecione...</option>
-                      {roundData.times
-                    .filter((time) => time.nome !== roundData.confrontos[6].timeA && time.nome !== roundData.confrontos[6].timeB && time.nome !== roundData.confrontos[7].timeA)
-                    .map((time, i) => (
-                      <option key={i} value={time.nome}>
-                        {time.nome}
-                      </option>
-                    ))}
-                    </select>
+                <div className="match-row">
+                  {knockoutSelect(7, 'timeA')}
+                  {scoreInput(7, 'golsA')}
+                  <b>X</b>
+                  {scoreInput(7, 'golsB')}
+                  {knockoutSelect(7, 'timeB')}
                 </div>
-              </div>
+              </section>
 
-              {/* Classificação */}
-              <div>
-              <h3>Classificação</h3>
-              <div style={{ marginBottom: "10px", gap: '20px' }}>
-                <label>Campeão: </label>
-                <select style={{ width: "100px", margin: "0 5px", textAlign: "center" }}
-                  value={roundData.times.find(time => time.classificacao === "Campeão")?.nome || ""}
-                  onChange={(e) => handleClassificacaoChange(e.target.value, "Campeão")}
-                >
-                  <option value="">Selecione...</option>
-                  {roundData.times
-                    .filter((time) => time.classificacao !== "Vice" && time.classificacao !== "Terceiro" && time.classificacao !== "Quarto")
-                    .map((time, i) => (
-                      <option key={i} value={time.nome}>
-                        {time.nome}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <div style={{ marginBottom: "10px" }}>
-                <label>Vice: </label>
-                <select style={{ width: "100px", margin: "0 50px", textAlign: "center" }}
-                  value={roundData.times.find(time => time.classificacao === "Vice")?.nome || ""}
-                  onChange={(e) => handleClassificacaoChange(e.target.value, "Vice")}
-                >
-                  <option value="">Selecione...</option>
-                  {roundData.times
-                    .filter((time) => time.classificacao !== "Campeão" && time.classificacao !== "Terceiro" && time.classificacao !== "Quarto")
-                    .map((time, i) => (
-                      <option key={i} value={time.nome}>
-                        {time.nome}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <div style={{ marginBottom: "10px" }}>
-                <label>Terceiro: </label>
-                <select style={{ width: "100px", margin: "0 20px", textAlign: "center" }}
-                  value={roundData.times.find(time => time.classificacao === "Terceiro")?.nome || ""}
-                  onChange={(e) => handleClassificacaoChange(e.target.value, "Terceiro")}
-                >
-                  <option value="">Selecione...</option>
-                  {roundData.times
-                    .filter((time) => time.classificacao !== "Campeão" && time.classificacao !== "Vice" && time.classificacao !== "Quarto")
-                    .map((time, i) => (
-                      <option key={i} value={time.nome}>
-                        {time.nome}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <div style={{ marginBottom: "10px"}}>
-                <label>Quarto: </label>
-                <select style={{ width: "100px", margin: "0 30px", textAlign: "center" }}
-                  value={roundData.times.find(time => time.classificacao === "Quarto")?.nome || ""}
-                  onChange={(e) => handleClassificacaoChange(e.target.value, "Quarto")}
-                >
-                  <option value="">Selecione...</option>
-                  {roundData.times
-                    .filter((time) => time.classificacao !== "Campeão" && time.classificacao !== "Vice" && time.classificacao !== "Terceiro")
-                    .map((time, i) => (
-                      <option key={i} value={time.nome}>
-                        {time.nome}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              </div>
+              <section className="team-box">
+                <h3>Classificação</h3>
+                {["Campeão", "Vice", "Terceiro", "Quarto"].map(classificacaoSelect)}
+              </section>
 
-              {/* Estatísticas */}
-              <div >
+              <section className="team-box">
                 <h3>Estatísticas</h3>
-                <div >
-                <label style={{ marginBottom: "0px", display: 'flex', flexDirection: 'column'}}>Artilheiros: </label>
-                <input
-                    type="text"
-                    placeholder="Artilheiro"
-                    value={roundData.artilheiros.nomes}
-                    onChange={(e) =>
-                      setRoundData((prev) => {
-                        const updated = { ...prev.artilheiros };
-                        updated.nomes = e.target.value;
-                        return { ...prev, artilheiros: updated };
-                      })
-                    }
-                    style={{ width: '120px', margin: "0 5px", textAlign: "center" }}
-                  />
-                  <input
-                    type="number"
-                    min={0}
-                    placeholder="Gols"
-                    value={roundData.artilheiros.gols}
-                    onChange={(e) =>
-                      setRoundData((prev) => {
-                        const updated = { ...prev.artilheiros };
-                        updated.gols = Number(e.target.value);
-                        return { ...prev, artilheiros: updated };
-                      })
-                    }
-                    style={{ width: '40px', margin: "0 5px", textAlign: "center" }}
-                  />
-                  <label style={{ marginBottom: "0px", marginTop: "10px", display: 'flex', flexDirection: 'column'}} >Assistênte(s): </label>
-                <input
-                    type="text"
-                    value={roundData.assistentes.nomes}
-                    placeholder="Maiores Assistentes"
-                    onChange={(e) =>
-                      setRoundData((prev) => {
-                        const updated = { ...prev.assistentes };
-                        updated.nomes = e.target.value;
-                        return { ...prev, assistentes: updated };
-                      })
-                    }
-                    style={{ width: '120px', margin: "0 5px", textAlign: "center" }}
-                  />
-                  <input
-                    type="number"
-                    min={0}
-                    value={roundData.assistentes.assistencias}
-                    placeholder="Assist."
-                    onChange={(e) =>
-                      setRoundData((prev) => {
-                        const updated = { ...prev.assistentes };
-                        updated.assistencias = Number(e.target.value);
-                        return { ...prev, assistentes: updated };
-                      })
-                    }
-                    style={{ width: '40px', margin: "0 5px", textAlign: "center" }}
-                  />
-              </div>
-              </div>
-              </div>
-    
-            <button onClick={() => calcularEstatisticas(roundData.confrontos)} style={{margin: '25px 44%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>Salvar</button>
+                <label className="field">
+                  <span>Artilheiro(s)</span>
+                  <div className="pair">
+                    <input className="inp" type="text" placeholder="Artilheiro" value={roundData.artilheiros.nomes}
+                      onChange={(e) => setStat('artilheiros', 'nomes', e.target.value)} />
+                    <input className="inp score" type="number" min={0} placeholder="Gols" value={roundData.artilheiros.gols}
+                      onChange={(e) => setStat('artilheiros', 'gols', Number(e.target.value))} />
+                  </div>
+                </label>
+                <label className="field">
+                  <span>Assistente(s)</span>
+                  <div className="pair">
+                    <input className="inp" type="text" placeholder="Maiores assistentes" value={roundData.assistentes.nomes}
+                      onChange={(e) => setStat('assistentes', 'nomes', e.target.value)} />
+                    <input className="inp score" type="number" min={0} placeholder="Assist." value={roundData.assistentes.assistencias}
+                      onChange={(e) => setStat('assistentes', 'assistencias', Number(e.target.value))} />
+                  </div>
+                </label>
+              </section>
+            </div>
+
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={closeNewRound}>Cancelar</button>
+              <button className="btn" onClick={() => calcularEstatisticas(roundData.confrontos)}>Salvar</button>
+            </div>
           </div>
         </div>
       )}
-      </div>
-      {isModalOpen || modalUpdate ? "" : <div className="div-round-table">
-        <table className="round-table">
-          <thead>
-            <tr>
-              <th>Rodada</th>
-              <th>Data</th>
-              <th><span>&#9917;</span></th>
-              <th><span style={{backgroundColor: 'red', borderRadius: '3px'}}>A</span></th>
-              <th> 
-                  <img
-                  src={amarelo}
-                  alt="amarelo"
-                  style={{ width: "12px", height: "15px" }}/>
-              </th>
-              <th> 
-                  <img
-                  src={vermelho}
-                  alt="vermelhos"
-                  style={{ width: "12px", height: "15px" }}/>
-              </th>
-              <th>Artilheiros</th>
-              <th>Assistêntes</th>
-              <th><span>&#127942;</span></th>
-              <th><span>&#129352;</span></th>
-              <th><span>&#129353;</span></th>
-              <th>4º</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, index) => (
-              <tr key={index}>
-                <td>{row.numero}</td>
-                <td>{row.data}</td>
-                <td>{row.gols}</td>
-                <td>{row.assistencias}</td>
-                <td>{row.amarelos}</td>
-                <td>{row.vermelhos}</td>
-                <td>{row.artilheiro.nome + ' - ' + row.artilheiro.gols} Gols</td>
-                <td>{row.assistente.nome + ' - ' + row.assistente.assistencias} Ass.</td>
-                <td>{row.primeiro}</td>
-                <td>{row.segundo}</td>
-                <td>{row.terceiro}</td>
-                <td>{row.quarto}</td>
-                <td><button onClick={() => updateRound(row.numero)}>&#x270E;</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>}
-      {modalUpdate ? <div className="div-round-table">
-        <textarea id="update"
-          style={{ width: "80%", height: "70%" }}
-          value={textValue}
-          onChange={(e) => setTextValue(e.target.value)}/>
-        <br></br>
-        <button onClick={() => saveUpdate(textValue)}>Salvar</button>
-        <button onClick={() => setModalUpdate(false)}>Voltar</button>
-      <div/>
-      </div> 
-      
-      
-      : ''}
+
+      {modalUpdate && (
+        <div className="modal-backdrop" onClick={() => setModalUpdate(false)}>
+          <div className="card modal" onClick={(e) => e.stopPropagation()}>
+            <h2 className="section-title">Editar rodada</h2>
+            <textarea className="modal-text" value={textValue} onChange={(e) => setTextValue(e.target.value)} />
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => setModalUpdate(false)}>Voltar</button>
+              <button className="btn" onClick={() => saveUpdate(textValue)}>Salvar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
