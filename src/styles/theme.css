@@ -210,3 +210,14 @@ img { max-width: 100%; }
   .sponsors .slick-prev, .sponsors .slick-next { display: none !important; }
   .podium-name { font-size: 0.85rem; }
 }
+
+/* Abas do pódio */
+.tabs { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 14px; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: none; padding: 8px 16px; border-radius: 999px; cursor: pointer;
+  font: 600 0.85rem var(--font-body); color: var(--text-muted);
+  background: var(--bg-elev); border: 1px solid var(--border); transition: all 0.2s;
+}
+.tab:hover { color: var(--text); background: var(--bg-elev-2); }
+.tab.active { color: var(--on-brand); background: var(--brand); border-color: var(--brand); }
