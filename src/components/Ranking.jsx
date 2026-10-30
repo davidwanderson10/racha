@@ -30,6 +30,7 @@ const col = {
   ass: { label: "Assistências", title: "Assistências", get: (r) => r.ass },
   mediaG: { label: "Média", title: "Gols por cota", get: media("gols") },
   mediaA: { label: "Média", title: "Assistências por cota", get: media("ass") },
+  mediaT: { label: "Média", title: "Títulos por cota", get: media("primeiro") },
 };
 
 const fullTable = ["pontos", "cotas", "jogos", "vitorias", "empates", "derrotas", "gols_pro", "gols_contra", "saldo",
@@ -39,8 +40,8 @@ const fullTable = ["pontos", "cotas", "jogos", "vitorias", "empates", "derrotas"
 const tabs = [
   { key: "ranking", label: "RKG JOG.", source: "jog", stat: "pontos", unit: "pontos", columns: fullTable },
   { key: "goleiros", label: "RKG GOL.", source: "gol", stat: "pontos", unit: "pontos", columns: fullTable },
-  { key: "campeao_jog", label: "🏆 JOG.", source: "jog", stat: "primeiro", unit: "títulos", columns: ["primeiro"] },
-  { key: "campeao_gol", label: "🏆 GOL.", source: "gol", stat: "primeiro", unit: "títulos", columns: ["primeiro"] },
+  { key: "campeao_jog", label: "🏆 JOG.", source: "jog", stat: "primeiro", unit: "títulos", columns: ["primeiro", "cotas", "mediaT"] },
+  { key: "campeao_gol", label: "🏆 GOL.", source: "gol", stat: "primeiro", unit: "títulos", columns: ["primeiro", "cotas", "mediaT"] },
   { key: "gols", label: "Artilharia", source: "all", stat: "gols", unit: "gols", columns: ["gols", "cotas", "mediaG"] },
   { key: "ass", label: "Assistências", source: "all", stat: "ass", unit: "assistências", columns: ["ass", "cotas", "mediaA"] },
 ];

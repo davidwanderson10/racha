@@ -122,7 +122,7 @@ img { max-width: 100%; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
 
 /* ===== Footer ===== */
-.footer { margin-top: 60px; padding: 28px 0 90px; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+.footer { margin-top: 40px; padding: 0 0 90px; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
 .social-icons { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
 .social-icons a {
   width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
@@ -180,7 +180,7 @@ img { max-width: 100%; }
 .skeleton { background: linear-gradient(90deg, var(--bg-elev) 25%, var(--bg-elev-2) 50%, var(--bg-elev) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: var(--radius); }
 @keyframes shimmer { to { background-position: -200% 0; } }
 
-.sponsors { padding: 18px 8px 26px; }
+.sponsors { padding: 18px 8px 44px; text-align: left; }
 .sponsors .slick-slide > div { padding: 0 8px; }
 .sponsor-logo { display: grid !important; place-items: center; height: 110px; border-radius: 14px; background: #fff; padding: 10px; transition: transform 0.2s; }
 .sponsor-logo:hover { transform: translateY(-3px); }

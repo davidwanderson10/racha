@@ -1,10 +1,12 @@
 import React from "react";
+import Carousel from "./Carousel";
 import { FaInstagram, FaYoutube, FaFilePdf } from "react-icons/fa";
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="container">
+      <Carousel />
       <div className="social-icons">
         <a href="https://www.instagram.com/rachaverde" aria-label="Instagram">
           <FaInstagram size={20} />
